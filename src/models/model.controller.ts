@@ -40,7 +40,7 @@ export class ModelController {
       throw new HttpException(
         {
           statusCode: HttpStatus.BAD_REQUEST,
-          message: 'Возникла непредвиденная ошибка',
+          message: 'Возникла непредвиденная ошибка ',
         },
         HttpStatus.BAD_REQUEST,
       );
