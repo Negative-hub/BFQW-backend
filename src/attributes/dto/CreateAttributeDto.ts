@@ -1,5 +1,5 @@
 export class CreateAttributeDto {
   label: string;
-  nodeId?: number;
-  metanodeId?: number;
+  nodeId: number | null;
+  metanodeId: number | null;
 }

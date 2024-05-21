@@ -12,21 +12,22 @@ import { AttributeEntity } from '@/entities/attribute.entity';
 
 @Entity()
 export class NodeEntity {
-  @PrimaryGeneratedColumn({ type: 'int' })
-  @OneToMany(() => ModelEntity, (model) => model.id)
-  @OneToMany(() => AttributeEntity, (attr) => attr.node)
+  @PrimaryGeneratedColumn({ type: 'int', name: 'id' })
   id: number;
+  @OneToMany(() => AttributeEntity, (attr) => attr.node)
+  @JoinColumn({ name: 'id' })
+  attributes: AttributeEntity[];
 
   @Column({ type: 'varchar', length: 255, nullable: false })
   label: string;
 
-  @Column({ type: 'int', nullable: true })
-  @ManyToOne(() => MetanodeEntity, (metanode) => metanode.id)
-  @JoinColumn({ name: 'metanode_id' })
-  metanode: MetanodeEntity;
-
-  @Column({ type: 'int', nullable: true })
+  @Column({ type: 'int', name: 'model_id' })
   @ManyToOne(() => ModelEntity, (model) => model.id)
   @JoinColumn({ name: 'model_id' })
   model: ModelEntity;
+
+  @Column({ type: 'int', nullable: true, name: 'metanode_id' })
+  @ManyToOne(() => MetanodeEntity, (metanode) => metanode.id)
+  @JoinColumn({ name: 'metanode_id' })
+  metanode: MetanodeEntity | null;
 }

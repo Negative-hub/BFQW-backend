@@ -16,11 +16,11 @@ import { CreateModelDto } from '@/models/dto/CreateModelDto';
 export class ModelController {
   constructor(private readonly modelService: ModelService) {}
 
-  @Get(':id/metanodes')
+  @Get(':id/nodes')
   @HttpCode(200)
-  async getMetanodesByModel(@Param('id') id: string) {
+  async getNodes(@Param('id') id: string) {
     try {
-      return this.modelService.getMetanodesByModel(+id);
+      return this.modelService.getNodes(+id);
     } catch (e) {
       throw new HttpException(
         {
@@ -31,6 +31,55 @@ export class ModelController {
       );
     }
   }
+
+  @Get(':id/metanodes')
+  @HttpCode(200)
+  async getMetanodes(@Param('id') id: string) {
+    try {
+      return this.modelService.getMetanodes(+id);
+    } catch (e) {
+      throw new HttpException(
+        {
+          statusCode: HttpStatus.BAD_REQUEST,
+          message: 'Возникла непредвиденная ошибка',
+        },
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+  }
+
+  @Get(':id/edges')
+  @HttpCode(200)
+  async getEdges(@Param('id') id: string) {
+    try {
+      return this.modelService.getEdges(+id);
+    } catch (e) {
+      throw new HttpException(
+        {
+          statusCode: HttpStatus.BAD_REQUEST,
+          message: 'Возникла непредвиденная ошибка',
+        },
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+  }
+
+  @Get(':id/attributes')
+  @HttpCode(200)
+  async getAttributes(@Param('id') id: string) {
+    try {
+      return this.modelService.getAttributes(+id);
+    } catch (e) {
+      throw new HttpException(
+        {
+          statusCode: HttpStatus.BAD_REQUEST,
+          message: 'Возникла непредвиденная ошибка',
+        },
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+  }
+
   @Post()
   @HttpCode(201)
   async createModel(@Body() payload: CreateModelDto) {

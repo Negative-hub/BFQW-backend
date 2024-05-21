@@ -8,6 +8,7 @@ import {
   Body,
   Patch,
   Delete,
+  Get,
 } from '@nestjs/common';
 import { CreateNodeDto } from '@/nodes/dto/CreateNodeDto';
 import { NodeService } from '@/nodes/node.service';
@@ -22,6 +23,22 @@ export class NodeController {
   async createNode(@Body() payload: CreateNodeDto) {
     try {
       return this.nodesService.createNode(payload);
+    } catch (e) {
+      throw new HttpException(
+        {
+          status: HttpStatus.BAD_REQUEST,
+          error: 'Возникла непредвиденная ошибка',
+        },
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+  }
+
+  @Get(':id')
+  @HttpCode(200)
+  async getNode(@Param('id') id: string) {
+    try {
+      return this.nodesService.getNode({ nodeId: +id });
     } catch (e) {
       throw new HttpException(
         {

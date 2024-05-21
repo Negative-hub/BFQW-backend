@@ -14,7 +14,11 @@ export class UserService {
   ) {}
 
   async getAllModels(userId: number): Promise<ModelEntity[]> {
-    const user = await this.usersRepository.findOne({ where: { id: userId } });
-    return this.modelsRepository.findBy({ user });
+    const user = await this.usersRepository.findOne({
+      where: { id: userId },
+      relations: ['models'],
+    });
+    console.log(user, 'user');
+    return user.models;
   }
 }

@@ -1,11 +1,19 @@
-import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
-import { ModelEntity } from './model.entity';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  OneToMany,
+  JoinColumn,
+} from 'typeorm';
+import { ModelEntity } from '@/entities/model.entity';
 
 @Entity()
 export class UserEntity {
-  @PrimaryGeneratedColumn({ type: 'int' })
-  @OneToMany(() => ModelEntity, (model) => model.user)
+  @PrimaryGeneratedColumn({ type: 'int', name: 'id' })
   id: number;
+  @OneToMany(() => ModelEntity, (model) => model.user)
+  @JoinColumn({ name: 'id' })
+  models: ModelEntity[];
 
   @Column({ type: 'varchar', length: 255, nullable: false })
   name: string;

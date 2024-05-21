@@ -9,17 +9,17 @@ import {
   Patch,
   Delete,
 } from '@nestjs/common';
-import { CreateNodeDto } from '@/nodes/dto/CreateNodeDto';
-import { UpdateNodeDto } from '@/nodes/dto/UpdateNodeDto';
 import { MetanodeService } from '@/metanodes/metanode.service';
+import { CreateMetanodeDto } from '@/metanodes/dto/CreateMetanodeDto';
+import { UpdateMetanodeDto } from '@/metanodes/dto/UpdateMetanodeDto';
 
-@Controller('/api/nodes')
+@Controller('/api/metanodes')
 export class MetanodeController {
   constructor(private readonly metanodeService: MetanodeService) {}
 
   @Post()
   @HttpCode(201)
-  async createMetanode(@Body() payload: CreateNodeDto) {
+  async createMetanode(@Body() payload: CreateMetanodeDto) {
     try {
       return this.metanodeService.createMetanode(payload);
     } catch (e) {
@@ -35,7 +35,7 @@ export class MetanodeController {
 
   @Patch(':id')
   @HttpCode(200)
-  async updateMetanode(@Body() payload: UpdateNodeDto) {
+  async updateMetanode(@Body() payload: UpdateMetanodeDto) {
     try {
       return this.metanodeService.updateMetanode(payload);
     } catch (e) {

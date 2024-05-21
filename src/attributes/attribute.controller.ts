@@ -23,6 +23,7 @@ export class AttributeController {
     try {
       return this.attributeService.createAttribute(payload);
     } catch (e) {
+      console.log(e, 'e');
       throw new HttpException(
         {
           status: HttpStatus.BAD_REQUEST,

@@ -20,7 +20,7 @@ export class EdgeController {
 
   @Post()
   @HttpCode(201)
-  async createEdge(@Body() payload: CreateEdgeDto): Promise<EdgeEntity> {
+  async createEdge(@Body() payload: CreateEdgeDto) {
     try {
       return this.edgeService.createEdge(payload);
     } catch (e) {
@@ -36,7 +36,7 @@ export class EdgeController {
 
   @Patch(':id')
   @HttpCode(200)
-  async updateEdge(@Body() payload: UpdateEdgeDto): Promise<EdgeEntity> {
+  async updateEdge(@Body() payload: UpdateEdgeDto) {
     try {
       return this.edgeService.updateEdge(payload);
     } catch (e) {
@@ -52,7 +52,7 @@ export class EdgeController {
 
   @Delete(':id')
   @HttpCode(200)
-  async deleteEdge(@Param('id') id: string): Promise<void> {
+  async deleteEdge(@Param('id') id: string) {
     try {
       return this.edgeService.deleteEdge(+id);
     } catch (e) {

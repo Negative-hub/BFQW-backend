@@ -6,6 +6,7 @@ import { ModelEntity } from '@/entities/model.entity';
 import { NodeEntity } from '@/entities/node.entity';
 import { AttributeEntity } from '@/entities/attribute.entity';
 import { MetanodeEntity } from '@/entities/metanode.entity';
+import { EdgeEntity } from '@/entities/edge.entity';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { MetanodeEntity } from '@/entities/metanode.entity';
       NodeEntity,
       AttributeEntity,
       MetanodeEntity,
+      EdgeEntity,
     ]),
   ],
   controllers: [NodeController],

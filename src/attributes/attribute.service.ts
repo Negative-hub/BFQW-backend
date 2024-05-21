@@ -6,6 +6,7 @@ import { AttributeEntity } from '@/entities/attribute.entity';
 import { CreateAttributeDto } from '@/attributes/dto/CreateAttributeDto';
 import { NodeEntity } from '@/entities/node.entity';
 import { UpdateAttributeDto } from '@/attributes/dto/UpdateAttributeDto';
+import { AttributeOption } from '@/types/general';
 
 @Injectable()
 export class AttributeService {
@@ -18,19 +19,28 @@ export class AttributeService {
     private attributeRepository: Repository<AttributeEntity>,
   ) {}
 
-  async createAttribute(payload: CreateAttributeDto): Promise<AttributeEntity> {
-    const node = await this.nodeRepository.findOne({
-      where: { id: payload.nodeId },
-    });
-    const metanode = await this.metanodeRepository.findOne({
-      where: { id: payload.metanodeId },
+  async createAttribute(dto: CreateAttributeDto): Promise<AttributeOption> {
+    const createdAttribute = this.attributeRepository.create({
+      label: dto.label,
     });
 
-    return this.attributeRepository.create({
-      label: payload.label,
+    const node = await this.nodeRepository.findOneBy({ id: dto.nodeId });
+    const metanode = await this.metanodeRepository.findOneBy({
+      id: dto.metanodeId,
+    });
+
+    const savedAttribute = await this.attributeRepository.save({
+      ...createdAttribute,
       node,
       metanode,
     });
+
+    return {
+      id: savedAttribute.id,
+      label: savedAttribute.label,
+      nodeId: node ? node.id.toString() : null,
+      metanodeId: savedAttribute.metanode ? savedAttribute.metanode.id : null,
+    };
   }
 
   async updateAttribute(payload: UpdateAttributeDto): Promise<AttributeEntity> {
