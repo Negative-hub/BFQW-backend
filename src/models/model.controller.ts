@@ -16,6 +16,21 @@ import { CreateModelDto } from '@/models/dto/CreateModelDto';
 export class ModelController {
   constructor(private readonly modelService: ModelService) {}
 
+  @Get()
+  async getModels() {
+    try {
+      return this.modelService.getModels();
+    } catch (e) {
+      throw new HttpException(
+        {
+          status: HttpStatus.BAD_REQUEST,
+          error: 'Возникла непредвиденная ошибка',
+        },
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+  }
+
   @Get(':id/nodes')
   @HttpCode(200)
   async getNodes(@Param('id') id: string) {

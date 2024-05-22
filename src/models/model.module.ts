@@ -13,7 +13,7 @@ import { EdgeEntity } from '@/entities/edge.entity';
   imports: [
     TypeOrmModule.forFeature([
       ModelEntity,
-      UserEntity,
+      // UserEntity,
       MetanodeEntity,
       NodeEntity,
       AttributeEntity,

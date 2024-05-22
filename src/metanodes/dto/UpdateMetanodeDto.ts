@@ -1,5 +1,7 @@
 export class UpdateMetanodeDto {
   id: number;
   label: string;
-  nodes: number[];
+  modelId: number;
+  attributeIds: number[];
+  nodeIds: number[];
 }

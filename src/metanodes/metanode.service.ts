@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { ArrayContains, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import { MetanodeEntity } from '@/entities/metanode.entity';
 import { CreateMetanodeDto } from '@/metanodes/dto/CreateMetanodeDto';
 import { AttributeEntity } from '@/entities/attribute.entity';
@@ -41,18 +41,38 @@ export class MetanodeService {
     }));
   }
 
-  async updateMetanode(dto: UpdateMetanodeDto): Promise<MetanodeEntity> {
+  async updateMetanode(dto: UpdateMetanodeDto): Promise<MetagraphNode[]> {
+    const metanode = await this.metanodeRepository.findOneBy({ id: dto.id });
     await this.metanodeRepository.update({ id: dto.id }, { label: dto.label });
 
-    const metanode = await this.metanodeRepository.findOneBy({ id: dto.id });
+    await this.nodeRepository.update({ metanode }, { metanode: null });
+    await Promise.all(
+      dto.nodeIds.map((node) =>
+        this.nodeRepository.update({ id: node }, { metanode: { id: dto.id } }),
+      ),
+    );
 
     await this.attributeRepository.update({ metanode }, { metanode: null });
-    // const updatedAttributes = dto.attributes.map((attr) => {
-    //   return this.attributeRepository.update({ id: attr }, { metanode });
-    // });
-    // await Promise.all(updatedAttributes);
+    await Promise.all(
+      dto.attributeIds.map((attr) =>
+        this.attributeRepository.update(
+          { id: attr },
+          { metanode: { id: dto.id } },
+        ),
+      ),
+    );
 
-    return metanode;
+    const metagraphNodes = await this.nodeRepository
+      .createQueryBuilder('nodes')
+      .leftJoinAndSelect('nodes.metanode', 'metanodes')
+      .where('nodes.model = :modelId', { modelId: dto.modelId })
+      .getMany();
+
+    return metagraphNodes.map((node) => ({
+      id: node.id.toString(),
+      label: node.label,
+      data: { metanode: node.metanode ? node.metanode.label : 0 },
+    }));
   }
 
   async deleteMetanode(id: number): Promise<void> {

@@ -9,8 +9,9 @@ import { UpdateNodeDto } from '@/nodes/dto/UpdateNodeDto';
 import { AttributeEntity } from '@/entities/attribute.entity';
 import { MetagraphNode } from '@/types/general';
 import { GetNodeDto } from '@/nodes/dto/GetNodeDto';
-import { UpdatedNode } from '@/types/node';
+import { UpdatedMetanode, UpdatedNode } from '@/types/node';
 import { EdgeEntity } from '@/entities/edge.entity';
+import { GetMetanodeDto } from '@/nodes/dto/GetMetanodeDto';
 
 @Injectable()
 export class NodeService {
@@ -26,6 +27,24 @@ export class NodeService {
     @InjectRepository(EdgeEntity)
     private edgeRepository: Repository<EdgeEntity>,
   ) {}
+
+  async getMetanodeById(dto: GetMetanodeDto): Promise<UpdatedMetanode> {
+    const metanode = await this.metanodeRepository
+      .createQueryBuilder('metanodes')
+      .leftJoinAndSelect('metanodes.nodes', 'nodes')
+      .leftJoinAndSelect('metanodes.attributes', 'attributes')
+      .where('nodes.id IN (:nodeIds)', { nodeIds: dto.nodeIds })
+      .getOne();
+
+    return {
+      id: metanode.id,
+      label: metanode.label,
+      attributeIds: metanode.attributes
+        .filter((attr) => attr)
+        .map((attr) => attr.id),
+      nodeIds: metanode.nodes.map((node) => node.id.toString()),
+    };
+  }
 
   async getNode(dto: GetNodeDto): Promise<UpdatedNode> {
     const node = await this.nodesRepository

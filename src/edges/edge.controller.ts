@@ -8,11 +8,11 @@ import {
   Body,
   Patch,
   Delete,
+  Get,
 } from '@nestjs/common';
 import { EdgeService } from '@/edges/edge.service';
 import { CreateEdgeDto } from '@/edges/dto/CreateEdgeDto';
 import { UpdateEdgeDto } from '@/edges/dto/UpdateEdgeDto';
-import { EdgeEntity } from '@/entities/edge.entity';
 
 @Controller('/api/edges')
 export class EdgeController {
@@ -23,6 +23,22 @@ export class EdgeController {
   async createEdge(@Body() payload: CreateEdgeDto) {
     try {
       return this.edgeService.createEdge(payload);
+    } catch (e) {
+      throw new HttpException(
+        {
+          status: HttpStatus.BAD_REQUEST,
+          error: 'Возникла непредвиденная ошибка',
+        },
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+  }
+
+  @Get(':id')
+  @HttpCode(200)
+  async getEdgeById(@Param('id') id: string) {
+    try {
+      return this.edgeService.getEdgeById({ edgeId: +id });
     } catch (e) {
       throw new HttpException(
         {

@@ -20,8 +20,9 @@ export class ModelEntity {
   @Column({ type: 'varchar', length: 255 })
   name: string;
 
-  @Column({ type: 'int', name: 'user_id' })
-  @ManyToOne(() => UserEntity, (user) => user.id)
-  @JoinColumn({ name: 'user_id' })
-  user: UserEntity;
+  // TODO
+  // @Column({ type: 'int', name: 'user_id' })
+  // @ManyToOne(() => UserEntity, (user) => user.id)
+  // @JoinColumn({ name: 'user_id' })
+  // user: UserEntity;
 }

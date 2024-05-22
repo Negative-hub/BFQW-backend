@@ -11,9 +11,10 @@ import { ModelEntity } from '@/entities/model.entity';
 export class UserEntity {
   @PrimaryGeneratedColumn({ type: 'int', name: 'id' })
   id: number;
-  @OneToMany(() => ModelEntity, (model) => model.user)
-  @JoinColumn({ name: 'id' })
-  models: ModelEntity[];
+  // TODO
+  // @OneToMany(() => ModelEntity, (model) => model.user)
+  // @JoinColumn({ name: 'id' })
+  // models: ModelEntity[];
 
   @Column({ type: 'varchar', length: 255, nullable: false })
   name: string;

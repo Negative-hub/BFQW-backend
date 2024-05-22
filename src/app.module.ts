@@ -25,7 +25,7 @@ import { EdgeModule } from '@/edges/edge.module';
       password: 'root',
       database: 'metagraph',
       entities: [
-        UserEntity,
+        // UserEntity,
         ModelEntity,
         NodeEntity,
         EdgeEntity,

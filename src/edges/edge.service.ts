@@ -6,6 +6,7 @@ import { CreateEdgeDto } from '@/edges/dto/CreateEdgeDto';
 import { EdgeEntity } from '@/entities/edge.entity';
 import { UpdateEdgeDto } from '@/edges/dto/UpdateEdgeDto';
 import { MetagraphEdge } from '@/types/general';
+import { GetNodeDto } from '@/edges/dto/GetNodeDto';
 
 @Injectable()
 export class EdgeService {
@@ -35,6 +36,22 @@ export class EdgeService {
     };
   }
 
+  async getEdgeById(dto: GetNodeDto): Promise<MetagraphEdge> {
+    const edge = await this.edgeRepository
+      .createQueryBuilder('edges')
+      .leftJoinAndSelect('edges.source', 'source')
+      .leftJoinAndSelect('edges.target', 'target')
+      .where('edges.id = :edgeId', { edgeId: dto.edgeId })
+      .getOne();
+
+    return {
+      id: edge.id.toString(),
+      label: edge.label,
+      source: edge.source.id.toString(),
+      target: edge.target.id.toString(),
+    };
+  }
+
   async updateEdge(dto: UpdateEdgeDto): Promise<MetagraphEdge> {
     const source = await this.nodeRepository.findOneBy({ id: dto.sourceId });
     const target = await this.nodeRepository.findOneBy({ id: dto.targetId });
@@ -44,7 +61,12 @@ export class EdgeService {
       { label: dto.label, source, target },
     );
 
-    const edge = await this.edgeRepository.findOneBy({ id: dto.id });
+    const edge = await this.edgeRepository
+      .createQueryBuilder('edges')
+      .leftJoinAndSelect('edges.source', 'source')
+      .leftJoinAndSelect('edges.target', 'target')
+      .where('edges.id = :edgeId', { edgeId: dto.id })
+      .getOne();
 
     return {
       id: edge.id.toString(),

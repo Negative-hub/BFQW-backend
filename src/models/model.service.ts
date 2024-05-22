@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { ModelEntity } from '@/entities/model.entity';
-import { UserEntity } from '@/entities/user.entity';
+// import { UserEntity } from '@/entities/user.entity';
 import { CreateModelDto } from './dto/CreateModelDto';
 import {
   AttributeOption,
@@ -20,8 +20,8 @@ export class ModelService {
   constructor(
     @InjectRepository(ModelEntity)
     private modelsRepository: Repository<ModelEntity>,
-    @InjectRepository(UserEntity)
-    private usersRepository: Repository<UserEntity>,
+    // @InjectRepository(UserEntity)
+    // private usersRepository: Repository<UserEntity>,
     @InjectRepository(MetanodeEntity)
     private metanodesRepository: Repository<MetanodeEntity>,
     @InjectRepository(EdgeEntity)
@@ -31,6 +31,12 @@ export class ModelService {
     @InjectRepository(AttributeEntity)
     private attributesRepository: Repository<AttributeEntity>,
   ) {}
+
+  async getModels(): Promise<Option[]> {
+    const models = await this.modelsRepository.find();
+
+    return models.map((model) => ({ id: model.id, name: model.name }));
+  }
 
   async getNodes(modelId: number): Promise<MetagraphNode[]> {
     const nodes = await this.nodesRepository
@@ -82,6 +88,7 @@ export class ModelService {
     const attributes = await this.attributesRepository
       .createQueryBuilder('attributes')
       .leftJoinAndSelect('attributes.node', 'nodes')
+      .leftJoinAndSelect('attributes.metanode', 'metanodes')
       .leftJoinAndSelect('nodes.model', 'models')
       .where('models.id = :modelId', { modelId })
       .getMany();
@@ -95,11 +102,11 @@ export class ModelService {
   }
 
   async createModel(dto: CreateModelDto): Promise<Option> {
-    const user = await this.usersRepository.findOneBy({ id: dto.userId });
+    // const user = await this.usersRepository.findOneBy({ id: dto.userId });
     const createdModel = this.modelsRepository.create({ name: dto.name });
     const savedModel = await this.modelsRepository.save({
       ...createdModel,
-      user,
+      // user,
     });
 
     return { id: savedModel.id, name: savedModel.name };
