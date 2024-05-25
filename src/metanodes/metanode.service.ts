@@ -7,6 +7,7 @@ import { AttributeEntity } from '@/entities/attribute.entity';
 import { UpdateMetanodeDto } from '@/metanodes/dto/UpdateMetanodeDto';
 import { NodeEntity } from '@/entities/node.entity';
 import { MetagraphNode } from '@/types/general';
+import { errorHandler } from '@/utils/errorHandler';
 
 @Injectable()
 export class MetanodeService {
@@ -20,62 +21,80 @@ export class MetanodeService {
   ) {}
 
   async createMetanode(dto: CreateMetanodeDto): Promise<MetagraphNode[]> {
-    const createdMetanode = this.metanodeRepository.create({
-      label: dto.label,
-    });
+    try {
+      const createdMetanode = this.metanodeRepository.create({
+        label: dto.label,
+      });
 
-    const nodes = await this.nodeRepository
-      .createQueryBuilder('nodes')
-      .where('nodes.id IN (:nodeIds)', { nodeIds: dto.nodes })
-      .getMany();
+      const nodes = await this.nodeRepository
+        .createQueryBuilder('nodes')
+        .where('nodes.id IN (:nodeIds)', { nodeIds: dto.nodes })
+        .getMany();
 
-    const savedMetanode = await this.metanodeRepository.save({
-      ...createdMetanode,
-      nodes,
-    });
+      const savedMetanode = await this.metanodeRepository.save({
+        ...createdMetanode,
+        nodes,
+      });
 
-    return nodes.map((node) => ({
-      id: node.id.toString(),
-      label: node.label,
-      data: { metanode: savedMetanode.label },
-    }));
+      return nodes.map((node) => ({
+        id: node.id.toString(),
+        label: node.label,
+        data: { metanode: savedMetanode.label },
+      }));
+    } catch (e) {
+      return Promise.reject(errorHandler(e));
+    }
   }
 
   async updateMetanode(dto: UpdateMetanodeDto): Promise<MetagraphNode[]> {
-    const metanode = await this.metanodeRepository.findOneBy({ id: dto.id });
-    await this.metanodeRepository.update({ id: dto.id }, { label: dto.label });
+    try {
+      const metanode = await this.metanodeRepository.findOneBy({ id: dto.id });
+      await this.metanodeRepository.update(
+        { id: dto.id },
+        { label: dto.label },
+      );
 
-    await this.nodeRepository.update({ metanode }, { metanode: null });
-    await Promise.all(
-      dto.nodeIds.map((node) =>
-        this.nodeRepository.update({ id: node }, { metanode: { id: dto.id } }),
-      ),
-    );
-
-    await this.attributeRepository.update({ metanode }, { metanode: null });
-    await Promise.all(
-      dto.attributeIds.map((attr) =>
-        this.attributeRepository.update(
-          { id: attr },
-          { metanode: { id: dto.id } },
+      await this.nodeRepository.update({ metanode }, { metanode: null });
+      await Promise.all(
+        dto.nodeIds.map((node) =>
+          this.nodeRepository.update(
+            { id: node },
+            { metanode: { id: dto.id } },
+          ),
         ),
-      ),
-    );
+      );
 
-    const metagraphNodes = await this.nodeRepository
-      .createQueryBuilder('nodes')
-      .leftJoinAndSelect('nodes.metanode', 'metanodes')
-      .where('nodes.model = :modelId', { modelId: dto.modelId })
-      .getMany();
+      await this.attributeRepository.update({ metanode }, { metanode: null });
+      await Promise.all(
+        dto.attributeIds.map((attr) =>
+          this.attributeRepository.update(
+            { id: attr },
+            { metanode: { id: dto.id } },
+          ),
+        ),
+      );
 
-    return metagraphNodes.map((node) => ({
-      id: node.id.toString(),
-      label: node.label,
-      data: { metanode: node.metanode ? node.metanode.label : 0 },
-    }));
+      const metagraphNodes = await this.nodeRepository
+        .createQueryBuilder('nodes')
+        .leftJoinAndSelect('nodes.metanode', 'metanodes')
+        .where('nodes.model = :modelId', { modelId: dto.modelId })
+        .getMany();
+
+      return metagraphNodes.map((node) => ({
+        id: node.id.toString(),
+        label: node.label,
+        data: { metanode: node.metanode ? node.metanode.label : 0 },
+      }));
+    } catch (e) {
+      return Promise.reject(errorHandler(e));
+    }
   }
 
   async deleteMetanode(id: number): Promise<void> {
-    await this.metanodeRepository.delete({ id });
+    try {
+      await this.metanodeRepository.delete({ id });
+    } catch (e) {
+      return Promise.reject(errorHandler(e));
+    }
   }
 }

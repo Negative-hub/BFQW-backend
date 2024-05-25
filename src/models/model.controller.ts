@@ -5,12 +5,12 @@ import {
   Controller,
   HttpCode,
   HttpException,
-  HttpStatus,
   Param,
   Get,
 } from '@nestjs/common';
 import { ModelService } from '@/models/model.service';
 import { CreateModelDto } from '@/models/dto/CreateModelDto';
+import { ErrorResponse } from '@/types/general';
 
 @Controller('/api/models')
 export class ModelController {
@@ -19,14 +19,15 @@ export class ModelController {
   @Get()
   async getModels() {
     try {
-      return this.modelService.getModels();
+      return await this.modelService.getModels();
     } catch (e) {
+      const exception = e as ErrorResponse;
       throw new HttpException(
         {
-          status: HttpStatus.BAD_REQUEST,
-          error: 'Возникла непредвиденная ошибка',
+          status: exception.status,
+          message: exception.message,
         },
-        HttpStatus.BAD_REQUEST,
+        exception.status,
       );
     }
   }
@@ -35,14 +36,15 @@ export class ModelController {
   @HttpCode(200)
   async getNodes(@Param('id') id: string) {
     try {
-      return this.modelService.getNodes(+id);
+      return await this.modelService.getNodes(+id);
     } catch (e) {
+      const exception = e as ErrorResponse;
       throw new HttpException(
         {
-          statusCode: HttpStatus.BAD_REQUEST,
-          message: 'Возникла непредвиденная ошибка',
+          status: exception.status,
+          message: exception.message,
         },
-        HttpStatus.BAD_REQUEST,
+        exception.status,
       );
     }
   }
@@ -51,14 +53,15 @@ export class ModelController {
   @HttpCode(200)
   async getMetanodes(@Param('id') id: string) {
     try {
-      return this.modelService.getMetanodes(+id);
+      return await this.modelService.getMetanodes(+id);
     } catch (e) {
+      const exception = e as ErrorResponse;
       throw new HttpException(
         {
-          statusCode: HttpStatus.BAD_REQUEST,
-          message: 'Возникла непредвиденная ошибка',
+          status: exception.status,
+          message: exception.message,
         },
-        HttpStatus.BAD_REQUEST,
+        exception.status,
       );
     }
   }
@@ -67,14 +70,15 @@ export class ModelController {
   @HttpCode(200)
   async getEdges(@Param('id') id: string) {
     try {
-      return this.modelService.getEdges(+id);
+      return await this.modelService.getEdges(+id);
     } catch (e) {
+      const exception = e as ErrorResponse;
       throw new HttpException(
         {
-          statusCode: HttpStatus.BAD_REQUEST,
-          message: 'Возникла непредвиденная ошибка',
+          status: exception.status,
+          message: exception.message,
         },
-        HttpStatus.BAD_REQUEST,
+        exception.status,
       );
     }
   }
@@ -83,14 +87,15 @@ export class ModelController {
   @HttpCode(200)
   async getAttributes(@Param('id') id: string) {
     try {
-      return this.modelService.getAttributes(+id);
+      return await this.modelService.getAttributes(+id);
     } catch (e) {
+      const exception = e as ErrorResponse;
       throw new HttpException(
         {
-          statusCode: HttpStatus.BAD_REQUEST,
-          message: 'Возникла непредвиденная ошибка',
+          status: exception.status,
+          message: exception.message,
         },
-        HttpStatus.BAD_REQUEST,
+        exception.status,
       );
     }
   }
@@ -99,14 +104,15 @@ export class ModelController {
   @HttpCode(201)
   async createModel(@Body() payload: CreateModelDto) {
     try {
-      return this.modelService.createModel(payload);
+      return await this.modelService.createModel(payload);
     } catch (e) {
+      const exception = e as ErrorResponse;
       throw new HttpException(
         {
-          statusCode: HttpStatus.BAD_REQUEST,
-          message: 'Возникла непредвиденная ошибка',
+          status: exception.status,
+          message: exception.message,
         },
-        HttpStatus.BAD_REQUEST,
+        exception.status,
       );
     }
   }
@@ -115,14 +121,15 @@ export class ModelController {
   @HttpCode(200)
   async deleteModel(@Param('id') id: string) {
     try {
-      return this.modelService.deleteModel(+id);
+      return await this.modelService.deleteModel(+id);
     } catch (e) {
+      const exception = e as ErrorResponse;
       throw new HttpException(
         {
-          statusCode: HttpStatus.BAD_REQUEST,
-          message: 'Возникла непредвиденная ошибка',
+          status: exception.status,
+          message: exception.message,
         },
-        HttpStatus.BAD_REQUEST,
+        exception.status,
       );
     }
   }

@@ -2,7 +2,6 @@ import {
   Controller,
   HttpCode,
   HttpException,
-  HttpStatus,
   Param,
   Post,
   Body,
@@ -12,6 +11,7 @@ import {
 import { AttributeService } from '@/attributes/attribute.service';
 import { CreateAttributeDto } from '@/attributes/dto/CreateAttributeDto';
 import { UpdateAttributeDto } from '@/attributes/dto/UpdateAttributeDto';
+import { ErrorResponse } from '@/types/general';
 
 @Controller('/api/attributes')
 export class AttributeController {
@@ -21,15 +21,15 @@ export class AttributeController {
   @HttpCode(201)
   async createAttribute(@Body() payload: CreateAttributeDto) {
     try {
-      return this.attributeService.createAttribute(payload);
+      return await this.attributeService.createAttribute(payload);
     } catch (e) {
-      console.log(e, 'e');
+      const exception = e as ErrorResponse;
       throw new HttpException(
         {
-          status: HttpStatus.BAD_REQUEST,
-          error: 'Возникла непредвиденная ошибка',
+          status: exception.status,
+          message: exception.message,
         },
-        HttpStatus.BAD_REQUEST,
+        exception.status,
       );
     }
   }
@@ -38,14 +38,15 @@ export class AttributeController {
   @HttpCode(200)
   async updateAttribute(@Body() payload: UpdateAttributeDto) {
     try {
-      return this.attributeService.updateAttribute(payload);
+      return await this.attributeService.updateAttribute(payload);
     } catch (e) {
+      const exception = e as ErrorResponse;
       throw new HttpException(
         {
-          status: HttpStatus.BAD_REQUEST,
-          error: 'Возникла непредвиденная ошибка',
+          status: exception.status,
+          message: exception.message,
         },
-        HttpStatus.BAD_REQUEST,
+        exception.status,
       );
     }
   }
@@ -54,14 +55,15 @@ export class AttributeController {
   @HttpCode(200)
   async deleteAttribute(@Param('id') id: string) {
     try {
-      return this.attributeService.deleteAttribute(+id);
+      return await this.attributeService.deleteAttribute(+id);
     } catch (e) {
+      const exception = e as ErrorResponse;
       throw new HttpException(
         {
-          status: HttpStatus.BAD_REQUEST,
-          error: 'Возникла непредвиденная ошибка',
+          status: exception.status,
+          message: exception.message,
         },
-        HttpStatus.BAD_REQUEST,
+        exception.status,
       );
     }
   }

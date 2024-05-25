@@ -7,6 +7,7 @@ import { EdgeEntity } from '@/entities/edge.entity';
 import { UpdateEdgeDto } from '@/edges/dto/UpdateEdgeDto';
 import { MetagraphEdge } from '@/types/general';
 import { GetNodeDto } from '@/edges/dto/GetNodeDto';
+import { errorHandler } from '@/utils/errorHandler';
 
 @Injectable()
 export class EdgeService {
@@ -18,65 +19,81 @@ export class EdgeService {
   ) {}
 
   async createEdge(dto: CreateEdgeDto): Promise<MetagraphEdge> {
-    const source = await this.nodeRepository.findOneBy({ id: dto.sourceId });
-    const target = await this.nodeRepository.findOneBy({ id: dto.targetId });
+    try {
+      const source = await this.nodeRepository.findOneBy({ id: dto.sourceId });
+      const target = await this.nodeRepository.findOneBy({ id: dto.targetId });
 
-    const createdEdge = this.edgeRepository.create({ label: dto.label });
-    const savedEdge = await this.edgeRepository.save({
-      ...createdEdge,
-      source,
-      target,
-    });
+      const createdEdge = this.edgeRepository.create({ label: dto.label });
+      const savedEdge = await this.edgeRepository.save({
+        ...createdEdge,
+        source,
+        target,
+      });
 
-    return {
-      id: savedEdge.id.toString(),
-      label: savedEdge.label,
-      source: savedEdge.source.toString(),
-      target: savedEdge.target.toString(),
-    };
+      return {
+        id: savedEdge.id.toString(),
+        label: savedEdge.label,
+        source: savedEdge.source.toString(),
+        target: savedEdge.target.toString(),
+      };
+    } catch (e) {
+      return Promise.reject(errorHandler(e));
+    }
   }
 
   async getEdgeById(dto: GetNodeDto): Promise<MetagraphEdge> {
-    const edge = await this.edgeRepository
-      .createQueryBuilder('edges')
-      .leftJoinAndSelect('edges.source', 'source')
-      .leftJoinAndSelect('edges.target', 'target')
-      .where('edges.id = :edgeId', { edgeId: dto.edgeId })
-      .getOne();
+    try {
+      const edge = await this.edgeRepository
+        .createQueryBuilder('edges')
+        .leftJoinAndSelect('edges.source', 'source')
+        .leftJoinAndSelect('edges.target', 'target')
+        .where('edges.id = :edgeId', { edgeId: dto.edgeId })
+        .getOne();
 
-    return {
-      id: edge.id.toString(),
-      label: edge.label,
-      source: edge.source.id.toString(),
-      target: edge.target.id.toString(),
-    };
+      return {
+        id: edge.id.toString(),
+        label: edge.label,
+        source: edge.source.id.toString(),
+        target: edge.target.id.toString(),
+      };
+    } catch (e) {
+      return Promise.reject(errorHandler(e));
+    }
   }
 
   async updateEdge(dto: UpdateEdgeDto): Promise<MetagraphEdge> {
-    const source = await this.nodeRepository.findOneBy({ id: dto.sourceId });
-    const target = await this.nodeRepository.findOneBy({ id: dto.targetId });
+    try {
+      const source = await this.nodeRepository.findOneBy({ id: dto.sourceId });
+      const target = await this.nodeRepository.findOneBy({ id: dto.targetId });
 
-    await this.edgeRepository.update(
-      { id: dto.id },
-      { label: dto.label, source, target },
-    );
+      await this.edgeRepository.update(
+        { id: dto.id },
+        { label: dto.label, source, target },
+      );
 
-    const edge = await this.edgeRepository
-      .createQueryBuilder('edges')
-      .leftJoinAndSelect('edges.source', 'source')
-      .leftJoinAndSelect('edges.target', 'target')
-      .where('edges.id = :edgeId', { edgeId: dto.id })
-      .getOne();
+      const edge = await this.edgeRepository
+        .createQueryBuilder('edges')
+        .leftJoinAndSelect('edges.source', 'source')
+        .leftJoinAndSelect('edges.target', 'target')
+        .where('edges.id = :edgeId', { edgeId: dto.id })
+        .getOne();
 
-    return {
-      id: edge.id.toString(),
-      label: edge.label,
-      source: edge.source.id.toString(),
-      target: edge.target.id.toString(),
-    };
+      return {
+        id: edge.id.toString(),
+        label: edge.label,
+        source: edge.source.id.toString(),
+        target: edge.target.id.toString(),
+      };
+    } catch (e) {
+      return Promise.reject(errorHandler(e));
+    }
   }
 
   async deleteEdge(id: number): Promise<void> {
-    await this.edgeRepository.delete({ id });
+    try {
+      await this.edgeRepository.delete({ id });
+    } catch (e) {
+      return Promise.reject(errorHandler(e));
+    }
   }
 }

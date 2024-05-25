@@ -2,7 +2,6 @@ import {
   Controller,
   HttpCode,
   HttpException,
-  HttpStatus,
   Param,
   Post,
   Body,
@@ -12,6 +11,7 @@ import {
 import { MetanodeService } from '@/metanodes/metanode.service';
 import { CreateMetanodeDto } from '@/metanodes/dto/CreateMetanodeDto';
 import { UpdateMetanodeDto } from '@/metanodes/dto/UpdateMetanodeDto';
+import { ErrorResponse } from '@/types/general';
 
 @Controller('/api/metanodes')
 export class MetanodeController {
@@ -21,14 +21,15 @@ export class MetanodeController {
   @HttpCode(201)
   async createMetanode(@Body() payload: CreateMetanodeDto) {
     try {
-      return this.metanodeService.createMetanode(payload);
+      return await this.metanodeService.createMetanode(payload);
     } catch (e) {
+      const exception = e as ErrorResponse;
       throw new HttpException(
         {
-          status: HttpStatus.BAD_REQUEST,
-          error: 'Возникла непредвиденная ошибка',
+          status: exception.status,
+          message: exception.message,
         },
-        HttpStatus.BAD_REQUEST,
+        exception.status,
       );
     }
   }
@@ -37,14 +38,15 @@ export class MetanodeController {
   @HttpCode(200)
   async updateMetanode(@Body() payload: UpdateMetanodeDto) {
     try {
-      return this.metanodeService.updateMetanode(payload);
+      return await this.metanodeService.updateMetanode(payload);
     } catch (e) {
+      const exception = e as ErrorResponse;
       throw new HttpException(
         {
-          status: HttpStatus.BAD_REQUEST,
-          error: 'Возникла непредвиденная ошибка',
+          status: exception.status,
+          message: exception.message,
         },
-        HttpStatus.BAD_REQUEST,
+        exception.status,
       );
     }
   }
@@ -53,14 +55,15 @@ export class MetanodeController {
   @HttpCode(200)
   async deleteMetanode(@Param('id') id: string) {
     try {
-      return this.metanodeService.deleteMetanode(+id);
+      return await this.metanodeService.deleteMetanode(+id);
     } catch (e) {
+      const exception = e as ErrorResponse;
       throw new HttpException(
         {
-          status: HttpStatus.BAD_REQUEST,
-          error: 'Возникла непредвиденная ошибка',
+          status: exception.status,
+          message: exception.message,
         },
-        HttpStatus.BAD_REQUEST,
+        exception.status,
       );
     }
   }

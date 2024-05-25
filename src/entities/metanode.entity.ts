@@ -8,7 +8,7 @@ import {
 import { NodeEntity } from './node.entity';
 import { AttributeEntity } from '@/entities/attribute.entity';
 
-@Entity()
+@Entity('metanode')
 export class MetanodeEntity {
   @PrimaryGeneratedColumn({ type: 'int', name: 'id' })
   id: number;

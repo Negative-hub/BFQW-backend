@@ -1,3 +1,5 @@
+import { HttpStatus } from '@nestjs/common';
+
 export interface Option {
   id: number;
   name: string;
@@ -21,4 +23,23 @@ export interface MetagraphEdge {
   source: string;
   target: string;
   label: string;
+}
+
+export interface ErrorResponse {
+  status: HttpStatus;
+  message: string;
+}
+
+export interface UpdatedNode {
+  id: number;
+  label: string;
+  attributeIds: number[];
+  metanodeId: number | null;
+}
+
+export interface UpdatedMetanode {
+  id: number;
+  label: string;
+  attributeIds: number[];
+  nodeIds: string[];
 }

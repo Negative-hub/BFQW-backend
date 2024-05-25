@@ -10,11 +10,13 @@ import { ModelEntity } from './model.entity';
 import { MetanodeEntity } from '@/entities/metanode.entity';
 import { AttributeEntity } from '@/entities/attribute.entity';
 
-@Entity()
+@Entity('node')
 export class NodeEntity {
   @PrimaryGeneratedColumn({ type: 'int', name: 'id' })
   id: number;
-  @OneToMany(() => AttributeEntity, (attr) => attr.node)
+  @OneToMany(() => AttributeEntity, (attr) => attr.node, {
+    onDelete: 'SET NULL',
+  })
   @JoinColumn({ name: 'id' })
   attributes: AttributeEntity[];
 
@@ -27,7 +29,9 @@ export class NodeEntity {
   model: ModelEntity;
 
   @Column({ type: 'int', nullable: true, name: 'metanode_id' })
-  @ManyToOne(() => MetanodeEntity, (metanode) => metanode.id)
+  @ManyToOne(() => MetanodeEntity, (metanode) => metanode.id, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn({ name: 'metanode_id' })
   metanode: MetanodeEntity | null;
 }

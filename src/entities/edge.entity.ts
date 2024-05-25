@@ -7,7 +7,7 @@ import {
 } from 'typeorm';
 import { NodeEntity } from './node.entity';
 
-@Entity()
+@Entity('edge')
 export class EdgeEntity {
   @PrimaryGeneratedColumn({ type: 'int' })
   id: number;

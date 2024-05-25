@@ -2,12 +2,12 @@ import {
   Entity,
   Column,
   PrimaryGeneratedColumn,
-  OneToMany,
-  JoinColumn,
+  // OneToMany,
+  // JoinColumn,
 } from 'typeorm';
-import { ModelEntity } from '@/entities/model.entity';
+// import { ModelEntity } from '@/entities/model.entity';
 
-@Entity()
+@Entity('user')
 export class UserEntity {
   @PrimaryGeneratedColumn({ type: 'int', name: 'id' })
   id: number;

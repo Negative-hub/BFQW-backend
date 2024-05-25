@@ -9,9 +9,10 @@ import { UpdateNodeDto } from '@/nodes/dto/UpdateNodeDto';
 import { AttributeEntity } from '@/entities/attribute.entity';
 import { MetagraphNode } from '@/types/general';
 import { GetNodeDto } from '@/nodes/dto/GetNodeDto';
-import { UpdatedMetanode, UpdatedNode } from '@/types/node';
+import { UpdatedMetanode, UpdatedNode } from '@/types/general';
 import { EdgeEntity } from '@/entities/edge.entity';
 import { GetMetanodeDto } from '@/nodes/dto/GetMetanodeDto';
+import { errorHandler } from '@/utils/errorHandler';
 
 @Injectable()
 export class NodeService {
@@ -29,88 +30,108 @@ export class NodeService {
   ) {}
 
   async getMetanodeById(dto: GetMetanodeDto): Promise<UpdatedMetanode> {
-    const metanode = await this.metanodeRepository
-      .createQueryBuilder('metanodes')
-      .leftJoinAndSelect('metanodes.nodes', 'nodes')
-      .leftJoinAndSelect('metanodes.attributes', 'attributes')
-      .where('nodes.id IN (:nodeIds)', { nodeIds: dto.nodeIds })
-      .getOne();
+    try {
+      const metanode = await this.metanodeRepository
+        .createQueryBuilder('metanodes')
+        .leftJoinAndSelect('metanodes.nodes', 'nodes')
+        .leftJoinAndSelect('metanodes.attributes', 'attributes')
+        .where('nodes.id IN (:nodeIds)', { nodeIds: dto.nodeIds })
+        .getOne();
 
-    return {
-      id: metanode.id,
-      label: metanode.label,
-      attributeIds: metanode.attributes
-        .filter((attr) => attr)
-        .map((attr) => attr.id),
-      nodeIds: metanode.nodes.map((node) => node.id.toString()),
-    };
+      return {
+        id: metanode.id,
+        label: metanode.label,
+        attributeIds: metanode.attributes
+          .filter((attr) => attr)
+          .map((attr) => attr.id),
+        nodeIds: metanode.nodes.map((node) => node.id.toString()),
+      };
+    } catch (e) {
+      return Promise.reject(errorHandler(e));
+    }
   }
 
   async getNode(dto: GetNodeDto): Promise<UpdatedNode> {
-    const node = await this.nodesRepository
-      .createQueryBuilder('nodes')
-      .leftJoinAndSelect('nodes.metanode', 'metanodes')
-      .where('nodes.id = :nodeId', { nodeId: dto.nodeId })
-      .getOne();
-    const attributes = await this.attributeRepository.findBy({
-      node: { id: node.id },
-    });
+    try {
+      const node = await this.nodesRepository
+        .createQueryBuilder('nodes')
+        .leftJoinAndSelect('nodes.metanode', 'metanodes')
+        .where('nodes.id = :nodeId', { nodeId: dto.nodeId })
+        .getOne();
+      const attributes = await this.attributeRepository.findBy({
+        node: { id: node.id },
+      });
 
-    return {
-      id: node.id,
-      label: node.label,
-      attributeIds: attributes.map((attr) => attr.id),
-      metanodeId: node.metanode ? node.metanode.id : null,
-    };
+      return {
+        id: node.id,
+        label: node.label,
+        attributeIds: attributes.map((attr) => attr.id),
+        metanodeId: node.metanode ? node.metanode.id : null,
+      };
+    } catch (e) {
+      return Promise.reject(errorHandler(e));
+    }
   }
 
   async createNode(dto: CreateNodeDto): Promise<MetagraphNode> {
-    const createdNode = this.nodesRepository.create({ label: dto.label });
+    try {
+      const createdNode = this.nodesRepository.create({ label: dto.label });
 
-    const model = await this.modelsRepository.findOneBy({ id: dto.modelId });
-    const savedNode = await this.nodesRepository.save({
-      ...createdNode,
-      model,
-    });
+      const model = await this.modelsRepository.findOneBy({ id: dto.modelId });
+      const savedNode = await this.nodesRepository.save({
+        ...createdNode,
+        model,
+      });
 
-    return {
-      id: savedNode.id.toString(),
-      label: savedNode.label,
-      data: { metanode: 0 },
-    };
+      return {
+        id: savedNode.id.toString(),
+        label: savedNode.label,
+        data: { metanode: 0 },
+      };
+    } catch (e) {
+      return Promise.reject(errorHandler(e));
+    }
   }
 
   async updateNode(dto: UpdateNodeDto): Promise<MetagraphNode> {
-    const node = await this.nodesRepository.findOneBy({ id: dto.id });
-    const model = await this.modelsRepository.findOneBy({ id: dto.modelId });
-    const metanode = await this.metanodeRepository.findOneBy({
-      id: dto.metanodeId,
-    });
-    await this.nodesRepository.update(
-      { id: dto.id },
-      { label: dto.label, model, metanode },
-    );
+    try {
+      const node = await this.nodesRepository.findOneBy({ id: dto.id });
+      const model = await this.modelsRepository.findOneBy({ id: dto.modelId });
+      const metanode = await this.metanodeRepository.findOneBy({
+        id: dto.metanodeId,
+      });
+      await this.nodesRepository.update(
+        { id: dto.id },
+        { label: dto.label, model, metanode },
+      );
 
-    await this.attributeRepository.update({ node }, { node: null });
+      await this.attributeRepository.update({ node }, { node: null });
 
-    const updatedNode = await this.nodesRepository.findOneBy({ id: dto.id });
+      const updatedNode = await this.nodesRepository.findOneBy({ id: dto.id });
 
-    await Promise.all(
-      dto.attributeIds.map((attr) =>
-        this.attributeRepository.update({ id: attr }, { node: updatedNode }),
-      ),
-    );
+      await Promise.all(
+        dto.attributeIds.map((attr) =>
+          this.attributeRepository.update({ id: attr }, { node: updatedNode }),
+        ),
+      );
 
-    return {
-      id: updatedNode.id.toString(),
-      label: updatedNode.label,
-      data: { metanode: updatedNode.metanode?.label || 0 },
-    };
+      return {
+        id: updatedNode.id.toString(),
+        label: updatedNode.label,
+        data: { metanode: updatedNode.metanode?.label || 0 },
+      };
+    } catch (e) {
+      return Promise.reject(errorHandler(e));
+    }
   }
 
   async deleteNode(id: number): Promise<void> {
-    await this.edgeRepository.delete({ source: { id } });
-    await this.edgeRepository.delete({ target: { id } });
-    await this.nodesRepository.delete({ id });
+    try {
+      await this.edgeRepository.delete({ source: { id } });
+      await this.edgeRepository.delete({ target: { id } });
+      await this.nodesRepository.delete({ id });
+    } catch (e) {
+      return Promise.reject(errorHandler(e));
+    }
   }
 }

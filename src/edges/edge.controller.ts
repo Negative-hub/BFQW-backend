@@ -2,7 +2,6 @@ import {
   Controller,
   HttpCode,
   HttpException,
-  HttpStatus,
   Param,
   Post,
   Body,
@@ -13,6 +12,7 @@ import {
 import { EdgeService } from '@/edges/edge.service';
 import { CreateEdgeDto } from '@/edges/dto/CreateEdgeDto';
 import { UpdateEdgeDto } from '@/edges/dto/UpdateEdgeDto';
+import { ErrorResponse } from '@/types/general';
 
 @Controller('/api/edges')
 export class EdgeController {
@@ -22,14 +22,15 @@ export class EdgeController {
   @HttpCode(201)
   async createEdge(@Body() payload: CreateEdgeDto) {
     try {
-      return this.edgeService.createEdge(payload);
+      return await this.edgeService.createEdge(payload);
     } catch (e) {
+      const exception = e as ErrorResponse;
       throw new HttpException(
         {
-          status: HttpStatus.BAD_REQUEST,
-          error: 'Возникла непредвиденная ошибка',
+          status: exception.status,
+          message: exception.message,
         },
-        HttpStatus.BAD_REQUEST,
+        exception.status,
       );
     }
   }
@@ -38,14 +39,15 @@ export class EdgeController {
   @HttpCode(200)
   async getEdgeById(@Param('id') id: string) {
     try {
-      return this.edgeService.getEdgeById({ edgeId: +id });
+      return await this.edgeService.getEdgeById({ edgeId: +id });
     } catch (e) {
+      const exception = e as ErrorResponse;
       throw new HttpException(
         {
-          status: HttpStatus.BAD_REQUEST,
-          error: 'Возникла непредвиденная ошибка',
+          status: exception.status,
+          message: exception.message,
         },
-        HttpStatus.BAD_REQUEST,
+        exception.status,
       );
     }
   }
@@ -54,14 +56,15 @@ export class EdgeController {
   @HttpCode(200)
   async updateEdge(@Body() payload: UpdateEdgeDto) {
     try {
-      return this.edgeService.updateEdge(payload);
+      return await this.edgeService.updateEdge(payload);
     } catch (e) {
+      const exception = e as ErrorResponse;
       throw new HttpException(
         {
-          status: HttpStatus.BAD_REQUEST,
-          error: 'Возникла непредвиденная ошибка',
+          status: exception.status,
+          message: exception.message,
         },
-        HttpStatus.BAD_REQUEST,
+        exception.status,
       );
     }
   }
@@ -70,14 +73,15 @@ export class EdgeController {
   @HttpCode(200)
   async deleteEdge(@Param('id') id: string) {
     try {
-      return this.edgeService.deleteEdge(+id);
+      return await this.edgeService.deleteEdge(+id);
     } catch (e) {
+      const exception = e as ErrorResponse;
       throw new HttpException(
         {
-          status: HttpStatus.BAD_REQUEST,
-          error: 'Возникла непредвиденная ошибка',
+          status: exception.status,
+          message: exception.message,
         },
-        HttpStatus.BAD_REQUEST,
+        exception.status,
       );
     }
   }

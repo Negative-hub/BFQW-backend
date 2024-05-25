@@ -2,18 +2,18 @@ import {
   Entity,
   PrimaryGeneratedColumn,
   Column,
-  ManyToOne,
+  // ManyToOne,
   OneToMany,
   JoinColumn,
 } from 'typeorm';
-import { UserEntity } from './user.entity';
+// import { UserEntity } from './user.entity';
 import { NodeEntity } from './node.entity';
 
-@Entity()
+@Entity('model')
 export class ModelEntity {
   @PrimaryGeneratedColumn({ type: 'int', name: 'id' })
   id: number;
-  @OneToMany(() => NodeEntity, (node) => node.model)
+  @OneToMany(() => NodeEntity, (node) => node.model, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'id', referencedColumnName: 'model_id' })
   nodes?: NodeEntity[];
 
