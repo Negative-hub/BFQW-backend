@@ -58,9 +58,13 @@ export class NodeService {
         .leftJoinAndSelect('nodes.metanode', 'metanodes')
         .where('nodes.id = :nodeId', { nodeId: dto.nodeId })
         .getOne();
-      const attributes = await this.attributeRepository.findBy({
-        node: { id: node.id },
-      });
+
+      const attributes = await this.attributeRepository
+        .createQueryBuilder('attributes')
+        .leftJoinAndSelect('attributes.node', 'nodes')
+        .leftJoinAndSelect('attributes.metanode', 'metanode')
+        .where('nodes.id = :nodeId', { nodeId: node.id })
+        .getMany();
 
       return {
         id: node.id,
