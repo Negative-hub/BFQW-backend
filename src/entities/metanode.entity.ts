@@ -12,10 +12,14 @@ import { AttributeEntity } from '@/entities/attribute.entity';
 export class MetanodeEntity {
   @PrimaryGeneratedColumn({ type: 'int', name: 'id' })
   id: number;
-  @OneToMany(() => NodeEntity, (node) => node.metanode)
+  @OneToMany(() => NodeEntity, (node) => node.metanode, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn({ name: 'id' })
   nodes: NodeEntity[];
-  @OneToMany(() => AttributeEntity, (attr) => attr.metanode)
+  @OneToMany(() => AttributeEntity, (attr) => attr.metanode, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn({ name: 'id' })
   attributes: AttributeEntity[];
 

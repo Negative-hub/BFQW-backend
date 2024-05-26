@@ -15,7 +15,7 @@ export class ModelEntity {
   id: number;
   @OneToMany(() => NodeEntity, (node) => node.model, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'id', referencedColumnName: 'model_id' })
-  nodes?: NodeEntity[];
+  nodes: NodeEntity[];
 
   @Column({ type: 'varchar', length: 255 })
   name: string;

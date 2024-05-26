@@ -17,12 +17,14 @@ export class AttributeEntity {
   label: string;
 
   @Column({ type: 'int', nullable: true, name: 'node_id' })
-  @ManyToOne(() => NodeEntity, (node) => node.id)
+  @ManyToOne(() => NodeEntity, (node) => node.id, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'node_id' })
   node: NodeEntity;
 
   @Column({ type: 'int', nullable: true, name: 'metanode_id' })
-  @ManyToOne(() => MetanodeEntity, (metanode) => metanode.id)
+  @ManyToOne(() => MetanodeEntity, (metanode) => metanode.id, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn({ name: 'metanode_id' })
   metanode: MetanodeEntity;
 }

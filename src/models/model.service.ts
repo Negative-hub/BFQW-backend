@@ -134,7 +134,6 @@ export class ModelService {
 
   async deleteModel(id: number): Promise<void> {
     try {
-      await this.nodesRepository.delete({ model: { id } });
       await this.modelsRepository.delete(id);
     } catch (e) {
       console.log(e, 'error');

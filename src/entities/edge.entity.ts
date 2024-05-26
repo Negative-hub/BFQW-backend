@@ -15,13 +15,13 @@ export class EdgeEntity {
   @Column({ type: 'varchar', length: 255, nullable: false })
   label: string;
 
-  @Column({ type: 'int', name: 'source_id' })
-  @ManyToOne(() => NodeEntity, (node) => node.id)
+  @Column({ type: 'int', name: 'source_id', nullable: true })
+  @ManyToOne(() => NodeEntity, (node) => node.id, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'source_id' })
   source: NodeEntity;
 
-  @Column({ type: 'int', name: 'target_id' })
-  @ManyToOne(() => NodeEntity, (node) => node.id)
+  @Column({ type: 'int', name: 'target_id', nullable: true })
+  @ManyToOne(() => NodeEntity, (node) => node.id, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'target_id' })
   target: NodeEntity;
 }

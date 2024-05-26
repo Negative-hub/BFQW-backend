@@ -15,7 +15,7 @@ export class NodeEntity {
   @PrimaryGeneratedColumn({ type: 'int', name: 'id' })
   id: number;
   @OneToMany(() => AttributeEntity, (attr) => attr.node, {
-    onDelete: 'SET NULL',
+    onDelete: 'CASCADE',
   })
   @JoinColumn({ name: 'id' })
   attributes: AttributeEntity[];
@@ -24,7 +24,7 @@ export class NodeEntity {
   label: string;
 
   @Column({ type: 'int', name: 'model_id' })
-  @ManyToOne(() => ModelEntity, (model) => model.id)
+  @ManyToOne(() => ModelEntity, (model) => model.id, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'model_id' })
   model: ModelEntity;
 
