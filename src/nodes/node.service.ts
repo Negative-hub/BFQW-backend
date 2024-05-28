@@ -101,9 +101,11 @@ export class NodeService {
     try {
       const node = await this.nodesRepository.findOneBy({ id: dto.id });
       const model = await this.modelsRepository.findOneBy({ id: dto.modelId });
-      const metanode = await this.metanodeRepository.findOneBy({
-        id: dto.metanodeId,
-      });
+      const metanode = await this.metanodeRepository
+        .createQueryBuilder('metanodes')
+        .where('metanodes.id = :metanodeId', { metanodeId: dto.metanodeId })
+        .getOne();
+
       await this.nodesRepository.update(
         { id: dto.id },
         { label: dto.label, model, metanode },
