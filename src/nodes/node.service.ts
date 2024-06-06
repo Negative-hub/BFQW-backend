@@ -113,7 +113,11 @@ export class NodeService {
 
       await this.attributeRepository.update({ node }, { node: null });
 
-      const updatedNode = await this.nodesRepository.findOneBy({ id: dto.id });
+      const updatedNode = await this.nodesRepository
+        .createQueryBuilder('nodes')
+        .leftJoinAndSelect('nodes.metanode', 'metanodes')
+        .where('nodes.id = :nodeId', { nodeId: dto.id })
+        .getOne();
 
       await Promise.all(
         dto.attributeIds.map((attr) =>
