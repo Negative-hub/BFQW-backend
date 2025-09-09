@@ -1,0 +1,28 @@
+name: CI/CD for DevOps
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  test-build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Забираем код
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      # 2. Тесты Backend
+      - name: Run backend tests
+        run: |
+          npm install
+          npm run test
+
+      # 3. Собираем backend
+      - name: Build Backend
+        if: success()
+        run: |
+          npm install
+          npm run build
