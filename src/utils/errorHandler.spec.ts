@@ -44,7 +44,7 @@ describe('errorHandler', () => {
     const error = new Error('Test error');
     const result: ErrorResponse = errorHandler(error);
 
-    expect(result).toHaveProperty('status');
+    expect(result).toHaveProperty('s'); // TODO
     expect(result).toHaveProperty('message');
     expect(typeof result.status).toBe('number');
     expect(typeof result.message).toBe('string');
