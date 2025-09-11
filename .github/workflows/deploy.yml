@@ -18,7 +18,7 @@ jobs:
       - name: Run backend tests
         run: |
           npm install
-         npm run test
+          npm run test
 
       # 3. Собираем backend
       - name: Build Backend
