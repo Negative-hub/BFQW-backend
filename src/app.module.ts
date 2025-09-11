@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { UserEntity } from './entities/user.entity';
+// import { UserEntity } from './entities/user.entity';
 import { ModelEntity } from './entities/model.entity';
 import { NodeEntity } from './entities/node.entity';
 import { EdgeEntity } from './entities/edge.entity';
@@ -22,7 +22,7 @@ import { EdgeModule } from '@/edges/edge.module';
       host: 'localhost',
       port: 3306,
       username: 'root',
-      password: 'root',
+      password: 'rootroot',
       database: 'metagraph',
       entities: [
         // UserEntity,
