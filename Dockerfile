@@ -12,7 +12,7 @@ COPY src ./src
 RUN npm run build
 
 # ---- run stage ----
-FROM node:20-alpine AS runner
+FROM node:current-alpine3.21 AS runner
 WORKDIR /app
 ENV NODE_ENV=production
 # Порт по умолчанию у Nest — 3000
