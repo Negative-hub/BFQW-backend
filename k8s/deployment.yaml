@@ -13,7 +13,7 @@ spec:
     spec:
       containers:
         - name: backend
-          image: cr.yandex/<REG_ID>/myapp-backend:latest
+          image: cr.yandex/crpgp99p6ne65krtvvmq/myapp-backend:latest
           ports:
             - containerPort: 3000
           env:

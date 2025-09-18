@@ -21,8 +21,8 @@ import { EdgeModule } from '@/edges/edge.module';
       type: 'mysql',
       host: 'localhost',
       port: 3306,
-      username: 'root',
-      password: 'root',
+      username: 'root1',
+      password: 'andrewNekit',
       database: 'metagraph',
       entities: [
         // UserEntity,
