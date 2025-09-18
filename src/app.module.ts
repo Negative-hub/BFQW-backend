@@ -19,7 +19,7 @@ import { EdgeModule } from '@/edges/edge.module';
   imports: [
     TypeOrmModule.forRoot({
       type: 'mysql',
-      host: 'rc1a-c9qm5emtn1sjmlvqe6im.mdb.yandexcloud.net',
+      host: 'rc1a-bt35cedt1e1ne9qk.mdb.yandexcloud.net',
       port: 3306,
       username: 'root1',
       password: 'andrewNekit',
@@ -32,7 +32,8 @@ import { EdgeModule } from '@/edges/edge.module';
         MetanodeEntity,
         AttributeEntity,
       ],
-      synchronize: true,
+      synchronize: false,
+      ssl: { rejectUnauthorized: true },
     }),
     UserModule,
     ModelModule,
