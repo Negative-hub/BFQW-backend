@@ -18,7 +18,7 @@ spec:
             - containerPort: 3000
           env:
             - name: DB_SSL_CA
-              value: /etc/yandex-ca/ca.rem
+              value: /etc/yandex-ca/ca.pem
 
             - name: NODE_ENV
               value: production
