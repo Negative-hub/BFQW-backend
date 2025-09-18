@@ -19,7 +19,7 @@ import { EdgeModule } from '@/edges/edge.module';
   imports: [
     TypeOrmModule.forRoot({
       type: 'mysql',
-      host: 'localhost',
+      host: 'rc1a-c9qm5emtn1sjmlvqe6im.mdb.yandexcloud.net',
       port: 3306,
       username: 'root1',
       password: 'andrewNekit',
