@@ -14,6 +14,7 @@ import { MetanodeModule } from '@/metanodes/metanode.module';
 import { ModelModule } from '@/models/model.module';
 import { AttributeModule } from '@/attributes/attribute.module';
 import { EdgeModule } from '@/edges/edge.module';
+import { readFileSync } from 'fs';
 
 @Module({
   imports: [
@@ -33,7 +34,10 @@ import { EdgeModule } from '@/edges/edge.module';
         AttributeEntity,
       ],
       synchronize: true,
-      ssl: { rejectUnauthorized: true },
+      ssl: {
+        ca: readFileSync(process.env.DB_SSL_CA, 'utf-8'),
+        rejectUnauthorized: true,
+      },
     }),
     UserModule,
     ModelModule,

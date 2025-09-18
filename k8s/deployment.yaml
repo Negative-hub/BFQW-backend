@@ -17,10 +17,15 @@ spec:
           ports:
             - containerPort: 3000
           env:
+            - name: DB_SSL_CA
+              value: /etc/yandex-ca/ca.rem
+
             - name: NODE_ENV
               value: production
-            # - name: CORS_ORIGIN
-            #   value: "http://frontend.lab3.example"
+          volumeMounts:
+            - name: yandex-ca
+              mountPath: /etc/yandex-ca
+              readOnly: true
           resources:
             requests:
               cpu: "200m"
@@ -37,3 +42,7 @@ spec:
             httpGet: { path: /health, port: 3000 }
             initialDelaySeconds: 15
             periodSeconds: 20
+      volumes:
+        - name: yandex-ca
+          secret:
+            secretName: yandex-ca
